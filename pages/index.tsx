@@ -1,10 +1,11 @@
-import Link from "next/link";
+import Layout from "components/Layout";
+// import Link from "next/link";
+// import styles from "../css/index.module.css";
 
-export default function Home() {
+export default function Index() {
   return (
-    <>
-      <Link href="/about">about</Link>
-      <h1>hello world</h1>
-    </>
+    <Layout title={"home"}>
+      <h1>hello</h1>
+    </Layout>
   );
 }

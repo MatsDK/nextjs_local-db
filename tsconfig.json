@@ -8,6 +8,7 @@
       "dom",
       "es2017"
     ],
+    "outDir": "dist",
     "module": "commonjs",
     "moduleResolution": "node",
     "noEmit": true,
