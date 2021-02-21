@@ -4,6 +4,8 @@ const updateItems = require("./updateItems");
 const filterItems = require("./findItems");
 const { createLocation, createCollection } = require("./create");
 const { deleteCollection, deleteLocation, findAndDelete } = require("./delete");
+const { nanoid } = require("nanoid");
+const { createCol, createLoc } = require("./create");
 
 module.exports = reqHandler = async (conn, req) => {
   try {
@@ -81,23 +83,34 @@ const findItem = (conn, req) => {
   conn.write(JSON.stringify({ items }));
 };
 
-const insertItem = (conn, req) => {
+const insertItem = async (conn, req) => {
   const locs = BSON.deserialize(fs.readFileSync("./data/dbData")).dbs;
-  const loc = locs.find((x) => x.name === req.location);
-  if (!loc) return conn.write(JSON.stringify({ err: "location not found" }));
+  let loc = locs.find((x) => x.name === req.location);
+  if (!loc) {
+    const err = createLoc({ name: req.location });
+    if (err) return conn.write(JSON.stringify({ err }));
+    loc = { name: req.location, collections: [] };
+  }
 
-  const colRef = loc.collections.find((x) => x.name === req.col);
-  if (!colRef)
-    return conn.write(JSON.stringify({ err: "collection not found" }));
+  let col = loc.collections.find((x) => x.name === req.col);
+  if (!col) {
+    const res = createCol({ locName: req.location, colName: req.col });
+    if (res.err) return conn.write(JSON.stringify({ err: res.err }));
+    col = res;
+  }
 
-  const col = BSON.deserialize(
-    fs.readFileSync(`./data/collection-${colRef.colId}`)
+  const data = BSON.deserialize(
+    fs.readFileSync(`./data/collection-${col.colId}`)
   );
-  col.items.unshift(req.apiItem);
 
-  fs.writeFileSync(`./data/collection-${colRef.colId}`, BSON.serialize(col));
+  let newItems;
+  if (!req.isArray) newItems = [{ _id: nanoid(), ...req.obj }];
+  else newItems = req.obj.map((x) => (x = { _id: nanoid(), ...x }));
 
-  conn.write(JSON.stringify({ apiItem: req.apiItem }));
+  data.items = [...newItems, ...data.items];
+  fs.writeFileSync(`./data/collection-${col.colId}`, BSON.serialize(data));
+
+  conn.write(JSON.stringify({ items: newItems }));
 };
 
 const getLocations = (conn) => {

@@ -1,11 +1,21 @@
+import axios from "axios";
 import Layout from "components/Layout";
-// import Link from "next/link";
 // import styles from "../css/index.module.css";
 
-export default function Index() {
+const Index = (props): JSX.Element => {
   return (
-    <Layout title={"home"}>
+    <Layout data={props} title={"Home"}>
       <h1>hello</h1>
     </Layout>
   );
+};
+
+export async function getServerSideProps() {
+  const res = await axios.get("http://localhost:3001/api/data");
+
+  return {
+    props: { data: res.data.dbs },
+  };
 }
+
+export default Index;

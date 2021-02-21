@@ -63,17 +63,29 @@ const deleteCollection = (conn, req) => {
   const loc = locs.dbs.find((x) => x.name === req.location);
   if (!loc) return conn.write(JSON.stringify({ err: "location not found" }));
 
-  const col = loc.collections.find((x) => x.name === req.name);
-  if (!col) return conn.write(JSON.stringify({ err: "collection not found" }));
+  if (!req.deleteAll) {
+    const col = loc.collections.find((x) => x.name === req.name);
+    if (!col)
+      return conn.write(JSON.stringify({ err: "collection not found" }));
 
-  if (fs.existsSync(`./data/collection-${col.colId}`))
-    fs.unlinkSync(`./data/collection-${col.colId}`);
+    if (fs.existsSync(`./data/collection-${col.colId}`))
+      fs.unlinkSync(`./data/collection-${col.colId}`);
 
-  loc.collections.forEach((x, i) => {
-    if (x.colId === col.colId) loc.collections.splice(i, 1);
-  });
+    loc.collections.forEach((x, i) => {
+      if (x.colId === col.colId) loc.collections.splice(i, 1);
+    });
 
-  fs.writeFileSync("./data/dbData", BSON.serialize(locs));
+    fs.writeFileSync("./data/dbData", BSON.serialize(locs));
+  } else {
+    loc.collections.forEach((col) => {
+      if (fs.existsSync(`./data/collection-${col.colId}`))
+        fs.unlinkSync(`./data/collection-${col.colId}`);
+    });
+
+    loc.collections = [];
+    fs.writeFileSync("./data/dbData", BSON.serialize(locs));
+  }
+
   conn.write(JSON.stringify({ err: false }));
 };
 

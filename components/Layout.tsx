@@ -1,15 +1,20 @@
 import React from "react";
+import Head from "next/head";
 import styles from "../css/index.module.css";
 import Sidebar from "./Sidebar";
 
-function Layout({ children, title }): JSX.Element {
-  console.log(title);
+const Layout = ({ children, title, data }): JSX.Element => {
   return (
-    <div className={styles.page}>
-      <Sidebar />
-      <div className={styles.mainContainer}>{children}</div>
-    </div>
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <div className={styles.page}>
+        <Sidebar data={data} />
+        <div className={styles.mainContainer}>{children}</div>
+      </div>
+    </>
   );
-}
+};
 
 export default Layout;

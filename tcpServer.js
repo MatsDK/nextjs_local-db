@@ -13,16 +13,18 @@ if (!fs.existsSync("./data/users"))
 if (!fs.existsSync("./data/dbData"))
   fs.writeFileSync("./data/dbData", BSON.serialize({ dbs: [] }));
 
-const tcpServer = net.createServer((conn) => {
+const server = net.createServer((conn) => {
   conn.on("data", (data) => {
-    if (typeof data.toString() !== "object") return;
-    const tcpReq = JSON.parse(data.toString());
-    if (tcpReq.connect) {
+    const req = JSON.parse(data.toString());
+
+    if (req.connect) {
       const data = BSON.deserialize(fs.readFileSync("./data/users"));
       const user = data.users.find((x) => x.name === "admin");
+
       if (!user) return conn.write(JSON.stringify({ err: "not valid user" }));
-      return conn.write(JSON.stringify({ user, loc: tcpReq.loc }));
-    }
+
+      return conn.write(JSON.stringify({ user, loc: req.loc }));
+    } else reqHandler(conn, req);
   });
 
   conn.once("end", () => {});
@@ -33,8 +35,8 @@ const tcpServer = net.createServer((conn) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-tcpServer.listen(PORT, "127.0.0.1", () =>
+server.listen(PORT, "127.0.0.1", () =>
   console.log(`TCP server running on port ${PORT}`)
 );

@@ -23,13 +23,11 @@ module.exports = updateItems = (items, req) => {
         req.updateQuery[x],
       ]);
 
-      if (!req.replace) {
+      if (!req.replace)
         newKeys.forEach((x) => {
           items[i][x[0]] = x[1];
         });
-      } else {
-        items[i] = { _id: items[i]._id, ...req.updateQuery };
-      }
+      else items[i] = { _id: items[i]._id, ...req.updateQuery };
 
       returnArr.push(items[i]);
     }
