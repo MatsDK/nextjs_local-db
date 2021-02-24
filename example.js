@@ -2,7 +2,7 @@ const { api, connect } = require("./lib/bundle");
 
 const example = async () => {
   const conn = await connect({ port: 3000, host: "127.0.0.1" });
-  const loc = api.location("loc", conn.apiConfig);
+  const loc = api.location("loc1", conn.apiConfig);
 
   // await loc
   //   .collection("col")
@@ -67,20 +67,40 @@ const example = async () => {
   //   console.log(locations);
   // });
 
-  // await loc.createCollection("col", (err) => {
+  // await loc.createCollection("col0", (err) => {
   //   if (err) throw err;
   // });
 
-  await conn.createLocation("loc1", (err) => {
-    if (err) throw err;
-  });
+  // await conn.createLocation("loc1", (err) => {
+  //   if (err) throw err;
+  // });
 
-  // await loc
-  //   .collection("col")
-  //   .insertMany([{ newItem1 }, { newItem2 }, { newItem3 }], (err, newDocs) => {
-  //     if (err) throw err;
-  //     console.log(newDocs);
-  //   });
+  await loc.collection("col").insertMany(
+    [
+      {
+        likedUsers: ["6004292e535fdb1fe48eb88e"],
+        body: "2",
+        user: { name: "admin", userId: "6004292e535fdb1fe48eb88e" },
+        date: { $date: "2021-02-09T18:42:52.787Z" },
+        timeStamp: "Feb 9th 2021, 7:42:52 pm",
+        reactions: [],
+        __v: 1,
+      },
+      {
+        likedUsers: ["6004292e535fdb1fe48eb88e"],
+        body: "2",
+        user: { name: "admin", userId: "6004292e535fdb1fe48eb88e" },
+        date: { $date: "2021-02-09T18:42:52.787Z" },
+        timeStamp: "Feb 9th 2021, 7:42:52 pm",
+        reactions: [],
+        __v: 1,
+      },
+    ],
+    (err, newDocs) => {
+      if (err) throw err;
+      console.log(newDocs);
+    }
+  );
 
   // await loc.collection("col").insertOne({ newItem }, (err, doc) => {
   //   if (err) throw err;

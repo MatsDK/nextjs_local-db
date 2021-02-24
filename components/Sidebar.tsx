@@ -1,20 +1,59 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "../css/sidebar.module.css";
+import { useRouter } from "next/router";
+import helper from "./helper";
+import SidebarLocations from "./SidebarLocations";
+
+import {
+  HomeOutlined,
+  GraphicEqOutlined,
+  CastConnectedOutlined,
+} from "@material-ui/icons";
 
 const Sidebar = ({ data }): JSX.Element => {
-  useEffect(() => {}, []);
+  const [activeIndex, setActiveIndex] = useState<number>();
+  const router = useRouter();
+
+  useEffect(() => {
+    setActiveIndex(helper(router.asPath));
+  }, [router]);
 
   return (
     <div className={styles.sideBar}>
-      <Link href="/locations/fjaksdfjasl">about</Link>
-      <div className={styles.locations}>
-        {data.data.map((x: any, i: number) => (
-          <Link key={i} href={`/locations/${x.locId}`}>
-            <p className={styles.locationLink}> {x.name}</p>
-          </Link>
-        ))}
-      </div>
+      <Link href="/">
+        <div
+          className={
+            activeIndex === 0 ? styles.activeSidebarLink : styles.sidebarLink
+          }
+        >
+          <HomeOutlined />
+          <p>Home</p>
+        </div>
+      </Link>
+      <Link href="/status">
+        <div
+          className={
+            activeIndex === 1 ? styles.activeSidebarLink : styles.sidebarLink
+          }
+        >
+          <GraphicEqOutlined />
+
+          <p>Status</p>
+        </div>
+      </Link>
+      <Link href="/requests">
+        <div
+          className={
+            activeIndex === 2 ? styles.activeSidebarLink : styles.sidebarLink
+          }
+        >
+          <CastConnectedOutlined />
+          <p>Requests</p>
+        </div>
+      </Link>
+
+      <SidebarLocations data={data.data} activeIndex={activeIndex} />
     </div>
   );
 };

@@ -1,21 +1,110 @@
 .sideBar {
-  padding: 20px;
   z-index: 2;
   height: 100%;
-  width: 280px;
-  background-color: #1a1e24;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.158);
+  width: 300px;
+  background-color: #171b20;
+  padding-top: 20px;
+  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.158); */
   display: flex;
   flex-direction: column;
 }
 
-.locations {
-  margin-top: 15px;
+.locationsWrapper {
+  overflow: hidden;
+  height: fit-content;
 }
-.locationLink {
-  color: #fff;
-  font-size: 20px;
-  margin: 0;
+
+/* .locationsWrapper:hover .locations { */
+/* transform: translateY(0); */
+/* } */
+
+.locations,
+.activeLocations {
+  transform: translateY(-150%);
+  /* transition: 0.1s ease-in-out; */
+  margin-top: 15px;
+  margin: 10px 0;
+  z-index: -1;
+  opacity: 0;
+}
+
+.activeLocations {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.locationLink,
+.activeLocationLink {
+  background-color: #171b20;
+  color: rgb(202, 202, 202);
+  font-size: 18px;
   cursor: pointer;
+  justify-content: space-between;
+  display: flex;
+  padding-left: 45px;
   text-decoration: none;
+  margin: 4px 0;
+  margin-top: 0;
+  padding-right: 10px;
+  z-index: 200;
+  transition: 0.15s ease;
+  position: relative;
+}
+
+.locationLink:hover {
+  color: rgb(255, 255, 255);
+}
+
+.activeLocationLink {
+  color: #0066af;
+}
+
+.locationLink p {
+  margin: 0;
+}
+
+.sidebarLink,
+.activeSidebarLink {
+  display: flex;
+  align-items: center;
+  transition: 0.15s ease;
+  font-size: 18px;
+  margin: 0;
+  margin: 8px 0;
+  margin-left: 20px;
+  cursor: pointer;
+}
+
+.sidebarLink p,
+.activeSidebarLink p {
+  margin: 0 15px;
+  font-size: 18px;
+  color: rgb(202, 202, 202);
+  letter-spacing: 1px;
+}
+
+.activeSidebarLink p {
+  /* background-color: #181c20; */
+  color: #0066af;
+}
+
+.locs {
+  overflow: hidden;
+}
+
+.locationBtn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 10px;
+}
+
+.activeArrow,
+.arrow {
+  cursor: pointer;
+  transform: rotate(0deg);
+  /* transition: 0.2s ease !important; */
+}
+.activeArrow {
+  transform: rotate(180deg);
 }
