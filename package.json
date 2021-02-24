@@ -25,7 +25,6 @@
     "typescript": "^4.1.5"
   },
   "scripts": {
-    "tcpServer": "nodemon tcpServer.js",
     "dev": "nodemon server/server.ts",
     "build": "next build && tsc --project tsconfig.server.json",
     "postinstall": "npm run build",
