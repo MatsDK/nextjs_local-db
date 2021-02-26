@@ -1,0 +1,76 @@
+.downArrow {
+  transform: rotate(90deg);
+}
+.upArrow {
+  transform: rotate(-90deg);
+}
+
+.heading {
+  display: flex;
+}
+.heading button {
+  border: 0;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  height: 40px;
+  font-size: 18px;
+  color: rgb(214, 214, 214);
+}
+
+.headingName,
+.headingDocs,
+.headingSize {
+  flex: 1;
+  padding: 10px 20px;
+  color: #fff;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.headingName {
+  justify-content: flex-start;
+}
+
+.headingDocs {
+  padding-left: 95px;
+}
+
+.headingSize {
+  padding-left: 0;
+  padding-right: 50px;
+}
+
+.row {
+  cursor: pointer;
+  background-color: #171b20;
+  display: flex;
+  padding: 20px;
+  text-align: center;
+  margin: 4px 10px;
+  margin-bottom: 16px;
+  margin-top: 0;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.438);
+  font-weight: 400;
+}
+
+.name {
+  text-align: left;
+  flex: 1;
+}
+.items {
+  /* text-align: left; */
+  /* padding-left: 40px; */
+  flex: 1;
+}
+
+.size {
+  flex: 1;
+}
+
+.headingArrow {
+  margin-left: 10px;
+  color: #0066af;
+}

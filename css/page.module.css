@@ -1,0 +1,18 @@
+.pageHeader {
+  margin: 4px 0 15px 20px;
+  font-size: 23px;
+  font-weight: 400;
+}
+
+.locationsContainer {
+  overflow-y: scroll;
+}
+
+.locationsContainer::-webkit-scrollbar {
+  background-color: transparent;
+  width: 5px;
+}
+.locationsContainer::-webkit-scrollbar-thumb {
+  background-color: #0066af71;
+  border-radius: 3px;
+}

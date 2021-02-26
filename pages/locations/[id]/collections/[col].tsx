@@ -3,25 +3,63 @@ import JsonTreeObject from "components/JsonTreeObject";
 import Layout from "components/Layout";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import styles from "../../../../css/col.module.css";
+import { ArrowForwardIos } from "@material-ui/icons";
 
 const Col = (props: any): JSX.Element => {
   const [items, setItems] = useState(props.items);
+  const [pageNumber, setPageNumber] = useState<number>(1);
+  const [morePosts, setMorePosts] = useState<Boolean>(true);
+
+  const observer: any = useRef();
+  const lastPostRef: any = useCallback(
+    (node: any) => {
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && morePosts)
+            setPageNumber((pageNumber) => pageNumber + 1);
+        },
+        { threshold: 0.5 }
+      );
+      if (node) observer.current.observe(node);
+    },
+    [morePosts]
+  );
 
   useEffect(() => {
-    setItems(props.items);
-  }, [props]);
+    setItems(props.items.slice(0, pageNumber * 10));
+    if (pageNumber * 10 >= props.items.length) setMorePosts(false);
+  }, [props, pageNumber]);
 
   return (
     <Layout title={props.col.name} data={props}>
       <div className={styles.colPage}>
-        <Link href={`/locations`}>Locations</Link>
-        <Link href={`/locations/${props.loc.locId}`}>{props.loc.name}</Link>
-        <p>{props.col.name}</p>
+        <div className={styles.pathWrapper}>
+          <Link href={`/locations`}>
+            <p className={styles.pathLink}>Locations</p>
+          </Link>
+          <ArrowForwardIos className={styles.arrow} />
+          <Link href={`/locations/${props.loc.locId}`}>
+            <p className={styles.pathLink}>{props.loc.name}</p>
+          </Link>
+          <ArrowForwardIos className={styles.arrow} />
+          <p className={styles.currentPathLink}>{props.col.name}</p>
+        </div>
         <div className="jsonObjectsWrapper">
           {items.map((x: any, i: number) => (
-            <JsonTreeObject data={x} key={i} />
+            <div
+              ref={
+                items.length !== 0 && i === items.length - 1
+                  ? lastPostRef
+                  : undefined
+              }
+              key={i}
+            >
+              <JsonTreeObject data={x} />
+            </div>
           ))}
         </div>
       </div>

@@ -1,16 +1,26 @@
 import axios from "axios";
 import Layout from "components/Layout";
-import Link from "next/link";
+import styles from "../css/page.module.css";
+import { useEffect, useState } from "react";
+import DataTable from "components/dataTable";
 
-const locations = (props) => {
+const locations = (props: any): JSX.Element => {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    props.data.forEach((x) => {
+      x.items = x.collections.length;
+      x.link = `/locations/${x.locId}`;
+    });
+    setItems(props.data);
+  }, [props]);
+
   return (
     <Layout title="Locations" data={props}>
-      locations
-      {props.data.map((x: any, i: number) => (
-        <Link href={`/locations/${x.locId}`} key={i}>
-          {x.name}
-        </Link>
-      ))}
+      <p className={styles.pageHeader}>Locations</p>
+      <div className={styles.locationsContainer}>
+        <DataTable data={items} header={["Name", "Collections", "Size"]} />
+      </div>
     </Layout>
   );
 };

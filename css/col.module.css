@@ -25,3 +25,34 @@
 .jsonObjectsWrapper {
   height: fit-content;
 }
+
+.pathWrapper {
+  display: flex;
+  align-items: center;
+  margin: 10px 15px;
+}
+
+.pathLink,
+.currentPathLink {
+  cursor: pointer;
+  margin: 0 7px;
+  color: rgb(212, 212, 212);
+  text-decoration: none;
+  font-size: 20px;
+  transition: 0.2s ease;
+}
+
+.pathLink:hover {
+  color: #fff;
+}
+
+.currentPathLink {
+  cursor: initial;
+  color: #fff;
+}
+
+.arrow {
+  color: #0066af;
+  width: 17px !important;
+  height: 17px !important;
+}
