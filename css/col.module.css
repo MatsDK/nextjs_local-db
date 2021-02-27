@@ -56,3 +56,8 @@
   width: 17px !important;
   height: 17px !important;
 }
+
+.pageHeader {
+  width: fit-content;
+  margin: 0;
+}

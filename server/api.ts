@@ -1,6 +1,7 @@
 import BSON from "bson";
 import express, { Request, Response } from "express";
 import fs from "fs";
+import { nanoid } from "nanoid";
 
 const router = express.Router();
 
@@ -48,6 +49,61 @@ router.get("/data/:id/col/:colId", (req: Request, res: Response) => {
   );
 
   res.json({ items, thisLoc, thisCol, data: data.items });
+});
+
+router.post("/createloc", (req: Request, res: Response) => {
+  const { name } = req.body;
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
+  if (items.dbs.find((x: any) => x.name === name))
+    return res.json({ err: true, data: "already exists" });
+
+  const thisItem: any = {
+    locId: nanoid(),
+    name,
+    collections: [],
+  };
+
+  items.dbs.push(thisItem);
+  fs.writeFileSync("./data/dbData", BSON.serialize(items));
+
+  thisItem.size = 0;
+
+  res.json({ err: false, data: thisItem });
+});
+
+router.post("/createcol", (req: Request, res: Response) => {
+  const { name, loc } = req.body;
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
+  const thisLoc = items.dbs.find((x: any) => x.locId === loc);
+
+  if (!thisLoc) return res.json({ err: true, data: "unidentified error" });
+  if (thisLoc.collections.find((x: any) => x.name === name))
+    return res.json({ err: true, data: "already exists" });
+
+  const newCol: any = {
+    name,
+    colId: nanoid(),
+  };
+  fs.writeFileSync(
+    `./data/collection-${newCol.colId}`,
+    BSON.serialize({ items: [] })
+  );
+
+  thisLoc.collections.push(newCol);
+  fs.writeFileSync("./data/dbData", BSON.serialize(items));
+
+  newCol.items = 0;
+  newCol.size = fs.statSync(`./data/collection-${newCol.colId}`).size;
+  res.json({ err: false, data: newCol });
+});
+
+router.post("/deleteLoc", (req: Request, res: Response) => {
+  const { name } = req.body;
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
+  // const newItems = items.dbs.filter((x: any) => x.locId !== name);
+  // fs.writeFileSync("./data/dbData", BSON.serialize(newItems));
+  console.log(name, items);
+  res.json({ err: false });
 });
 
 export default router;

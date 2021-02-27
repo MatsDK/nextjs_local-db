@@ -7,6 +7,7 @@
 
 .heading {
   display: flex;
+  margin-right: 30px;
 }
 .heading button {
   border: 0;
@@ -43,11 +44,13 @@
   padding-right: 50px;
 }
 
-.row {
+.row,
+.inpRow {
   cursor: pointer;
   background-color: #171b20;
   display: flex;
-  padding: 20px;
+  padding: 15px;
+  align-items: center;
   text-align: center;
   margin: 4px 10px;
   margin-bottom: 16px;
@@ -56,13 +59,29 @@
   font-weight: 400;
 }
 
+.inpRow {
+  height: 40px;
+  padding: 10px 15px;
+}
+
 .name {
   text-align: left;
   flex: 1;
 }
+
+.newInput {
+  text-align: left;
+  width: 100%;
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  color: #fff;
+  outline: 0;
+  border: 0;
+}
+
 .items {
-  /* text-align: left; */
-  /* padding-left: 40px; */
   flex: 1;
 }
 
@@ -73,4 +92,27 @@
 .headingArrow {
   margin-left: 10px;
   color: #0066af;
+}
+
+.inpForm {
+  flex: 1;
+}
+
+.deleteBtn,
+.closeBtn {
+  color: #0066af;
+  display: grid;
+  place-items: center;
+  background-color: transparent;
+  border: 0;
+  outline: none;
+  width: 30px;
+  height: 30px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.row:hover .deleteBtn,
+.inpRow:hover .closeBtn {
+  opacity: 1;
 }

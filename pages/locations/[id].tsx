@@ -9,17 +9,49 @@ import DataTable from "components/dataTable";
 
 const id = (props: any) => {
   const [items, setItems] = useState([]);
+  const [newLocationFrom, setNewLocationForm] = useState<Boolean>(false);
 
   useEffect(() => {
-    props.locData.collections.forEach((x) => {
+    parseData(props.locData.collections);
+  }, [props]);
+
+  const onSubmit = (data: string) => {
+    setNewLocationForm(false);
+    if (!data.replace(/\s/g, "").length) return;
+
+    axios({
+      method: "POST",
+      url: "http://localhost:3001/api/createcol/",
+      data: { name: data, loc: props.locData.locId },
+    }).then((res) => {
+      if (res.data.err) return alert(res.data.data);
+      parseData([res.data.data, ...items]);
+    });
+  };
+
+  const parseData = (data: any) => {
+    data.forEach((x: any) => {
       x.link = `/locations/${props.locData.locId}/collections/${x.colId}`;
     });
-    setItems(props.locData.collections);
-  }, [props]);
+    setItems(data);
+  };
+
+  const deleteClicked = (col: string) => {
+    console.log(props.locData.locId, col);
+  };
 
   return (
     <Layout data={props} title={props.locData.name}>
-      <p className={styles.pageHeader}>Collections</p>
+      <div className={styles.pageHeader}>
+        <p>Collections</p>
+        <button
+          onClick={() =>
+            setNewLocationForm((newLocationFrom) => !newLocationFrom)
+          }
+        >
+          New Collection
+        </button>
+      </div>
       <div className={styles.pathWrapper}>
         <Link href="/locations">
           <p className={styles.pathLink}>Locations</p>
@@ -28,8 +60,18 @@ const id = (props: any) => {
 
         <p className={styles.currentPathLink}>{props.locData.name}</p>
       </div>
+
       <div className={styles.collectionsContainer}>
-        <DataTable data={items} header={["Name", "Documents", "Size"]} />
+        <DataTable
+          showForm={newLocationFrom}
+          data={items}
+          functions={{
+            submitFunc: onSubmit,
+            setNewLocationForm,
+            deleteClicked,
+          }}
+          header={["Name", "Documents", "Size"]}
+        />
       </div>
     </Layout>
   );

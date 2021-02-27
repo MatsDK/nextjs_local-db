@@ -31,10 +31,37 @@
 
 .pageHeader {
   margin: 4px 0 15px 20px;
-  /* color: rgb(212, 212, 212); */
   font-size: 23px;
   font-weight: 400;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
+.pageHeader button {
+  color: rgb(196, 196, 196);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.534);
+  border: 0;
+  font-size: 18px;
+  outline: 0;
+  padding: 4px 10px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: 0.14s ease;
+  background-color: transparent;
+}
+
+.pageHeader button:hover {
+  background-color: #171b20;
+  color: #0066af;
+}
+
+.pageHeader p {
+  margin: 0;
+
+  width: fit-content;
+}
+
 .collectionsContainer {
   overflow-y: scroll;
 }
