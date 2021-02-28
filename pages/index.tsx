@@ -11,7 +11,7 @@ const Index = (props): JSX.Element => {
 };
 
 export async function getServerSideProps() {
-  const res = await axios.get("http://localhost:3001/api/data");
+  const res = await axios.get("http://localhost:3001/data");
 
   return {
     props: { data: res.data.dbs },

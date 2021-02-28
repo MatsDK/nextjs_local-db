@@ -21,7 +21,9 @@ const SidebarLocations = ({ data, activeIndex }): JSX.Element => {
 
   return (
     <div className={styles.locationsWrapper}>
-      <div className={styles.locationBtn}>
+      <div
+        className={showLocations ? styles.locationsActive : styles.locationBtn}
+      >
         <Link href="/locations">
           <div
             className={

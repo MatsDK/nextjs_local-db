@@ -61,3 +61,38 @@
   width: fit-content;
   margin: 0;
 }
+
+.renameIcon {
+  width: 20px !important;
+  height: 20px !important;
+  transition: 0.15s ease;
+  cursor: pointer;
+  margin-left: 4px;
+  margin-top: 2px;
+}
+
+.renameIcon:hover {
+  color: #0066af !important;
+}
+
+.rightPath {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.renameForm {
+  height: 27px;
+  transform: translateX(-5px);
+}
+
+.renameForm input {
+  height: 27px;
+  margin: 0px 7px;
+  padding: 2px 5px;
+  font-size: 20px;
+  background-color: #1f242b;
+  border: 0;
+  outline: 0;
+  color: #fff;
+}

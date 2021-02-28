@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   margin: 10px 15px;
+  height: 30px;
 }
 
 .pathLink,
@@ -40,7 +41,7 @@
 
 .pageHeader button {
   color: rgb(196, 196, 196);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.534);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.534);
   border: 0;
   font-size: 18px;
   outline: 0;
@@ -73,4 +74,40 @@
 .collectionsContainer::-webkit-scrollbar-thumb {
   background-color: #0066af71;
   border-radius: 3px;
+}
+
+.renameIcon {
+  width: 20px !important;
+  height: 20px !important;
+  transition: 0.15s ease;
+  cursor: pointer;
+  margin-left: 4px;
+  margin-top: 2px;
+}
+
+.renameIcon:hover {
+  color: #0066af !important;
+}
+
+.renameForm {
+  height: 27px;
+  transform: translateX(-5px);
+}
+
+.renameForm input {
+  height: 27px;
+  /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.534); */
+  margin: 0px 7px;
+  padding: 2px 5px;
+  font-size: 20px;
+  background-color: #1f242b;
+  border: 0;
+  outline: 0;
+  color: #fff;
+}
+
+.rightPath {
+  position: relative;
+  display: flex;
+  align-items: center;
 }

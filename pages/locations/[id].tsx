@@ -2,16 +2,24 @@ import axios from "axios";
 import Layout from "components/Layout";
 import { GetServerSideProps } from "next";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../../css/loc.module.css";
-import { ArrowForwardIos } from "@material-ui/icons";
+import { ArrowForwardIos, Create } from "@material-ui/icons";
 import DataTable from "components/dataTable";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 const id = (props: any) => {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<Array<any>>([]);
+  const [data, setData] = useState(props);
+  const [renameInpValue, setRenameInpValue] = useState<string>("");
+  const [showRenameForm, setShowRenameForm] = useState<boolean>(false);
   const [newLocationFrom, setNewLocationForm] = useState<Boolean>(false);
+  const [colName, setColName] = useState<string>(props.locData.name);
+  const renameInpRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    setColName(props.locData.name);
     parseData(props.locData.collections);
   }, [props]);
 
@@ -21,7 +29,7 @@ const id = (props: any) => {
 
     axios({
       method: "POST",
-      url: "http://localhost:3001/api/createcol/",
+      url: "http://localhost:3001/createcol/",
       data: { name: data, loc: props.locData.locId },
     }).then((res) => {
       if (res.data.err) return alert(res.data.data);
@@ -37,11 +45,62 @@ const id = (props: any) => {
   };
 
   const deleteClicked = (col: string) => {
-    console.log(props.locData.locId, col);
+    confirmAlert({
+      title: "Confirm to Delete",
+      message: "Are you sure you want to delete this collection.",
+      overlayClassName: "confirmOverlay",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            axios({
+              method: "POST",
+              url: "http://localhost:3001/deleteCol/",
+              data: { name: col, loc: props.locData.locId },
+            }).then((res) => {
+              if (res.data.err) return alert(res.data.data);
+              parseData(res.data.data.collections);
+            });
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {
+            return;
+          },
+        },
+      ],
+    });
+  };
+
+  useEffect(() => {
+    setData(props);
+  }, [props]);
+
+  useEffect(() => {
+    if (showRenameForm && renameInpRef && renameInpRef.current)
+      renameInpRef.current.focus();
+  }, [showRenameForm]);
+
+  const renameLoc = (e: any) => {
+    e.preventDefault();
+    if (!renameInpValue.replace(/\s/g, "").length) return;
+
+    axios({
+      method: "POST",
+      url: "http://localhost:3001/renameLoc/",
+      data: { locId: props.locData.locId, name: renameInpValue },
+    }).then((res) => {
+      if (res.data.err) return alert(res.data.data);
+      if (renameInpRef && renameInpRef.current) renameInpRef.current.blur();
+      setColName(renameInpValue);
+      setShowRenameForm(false);
+      setData(res.data);
+    });
   };
 
   return (
-    <Layout data={props} title={props.locData.name}>
+    <Layout data={data} title={colName}>
       <div className={styles.pageHeader}>
         <p>Collections</p>
         <button
@@ -58,7 +117,29 @@ const id = (props: any) => {
         </Link>
         <ArrowForwardIos className={styles.arrow} />
 
-        <p className={styles.currentPathLink}>{props.locData.name}</p>
+        <div className={styles.rightPath}>
+          {!showRenameForm && (
+            <p className={styles.currentPathLink}>{colName}</p>
+          )}
+          {showRenameForm && (
+            <form className={styles.renameForm} onSubmit={renameLoc}>
+              <input
+                ref={renameInpRef}
+                defaultValue={colName}
+                type="text"
+                placeholder="Enter a name"
+                onChange={(e) => setRenameInpValue(e.target.value)}
+              />
+            </form>
+          )}
+          <Create
+            className={styles.renameIcon}
+            style={{ color: showRenameForm ? "#0066af" : "rgb(212, 212, 212)" }}
+            onClick={() =>
+              setShowRenameForm((showRenameForm) => !showRenameForm)
+            }
+          />
+        </div>
       </div>
 
       <div className={styles.collectionsContainer}>
@@ -78,7 +159,7 @@ const id = (props: any) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const res = await axios.get(`http://localhost:3001/api/data/${params!.id}`);
+  const res = await axios.get(`http://localhost:3001/data/${params!.id}`);
 
   return {
     props: { data: res.data.items.dbs, locData: res.data.thisLoc },

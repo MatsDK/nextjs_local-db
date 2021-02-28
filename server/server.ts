@@ -1,6 +1,6 @@
 import next from "next";
 import express, { Application, Request, Response } from "express";
-import api from "./api";
+import api from "./routers/appRouter";
 import bodyParser from "body-parser";
 
 const dev = process.env.NODE_ENV !== "production";
@@ -13,7 +13,7 @@ app
     const server: Application = express();
 
     server.use(bodyParser());
-    server.use("/api", api);
+    server.use("/", api);
 
     server.get("*", (req: Request, res: Response) => {
       return handle(req, res);
