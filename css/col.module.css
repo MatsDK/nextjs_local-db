@@ -96,3 +96,63 @@
   outline: 0;
   color: #fff;
 }
+
+.editorWrapper {
+  margin: 0 20px;
+  margin-top: 15px;
+  padding: 5px;
+  background-color: #171b20;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.151);
+}
+
+.pageHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pageHeader button {
+  color: rgb(196, 196, 196);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.534);
+  border: 0;
+  font-size: 18px;
+  outline: 0;
+  padding: 4px 10px;
+  cursor: pointer;
+  margin-right: 20px;
+  transition: 0.14s ease;
+  background-color: transparent;
+}
+
+.pageHeader button:hover {
+  background-color: #171b20;
+  color: #fff;
+}
+
+.activeBtn {
+  background-color: #171b20 !important;
+}
+
+.insertEditorBottom {
+  display: flex;
+  margin-top: 4px;
+  justify-content: flex-end;
+}
+
+.insertEditorBottom button {
+  font-size: 18px;
+  border-radius: 3px;
+  background-color: transparent;
+  padding: 3px 10px;
+  cursor: pointer;
+  color: #0066af;
+  border: 1px solid #1f242b;
+  margin-right: 4px 10px;
+  outline: none;
+  transition: 0.1s ease;
+}
+
+.insertEditorBottom button:hover {
+  color: #fff;
+}

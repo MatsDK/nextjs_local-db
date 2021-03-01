@@ -21,7 +21,7 @@ const theme = {
   base0F: "#fff",
 };
 
-function JsonTreeObject({ data }) {
+const JsonTreeObject = ({ data }: any) => {
   const copyRef = useRef<HTMLTextAreaElement>(null);
 
   const copy = (data: any) => {
@@ -46,6 +46,6 @@ function JsonTreeObject({ data }) {
       />
     </div>
   );
-}
+};
 
 export default JsonTreeObject;

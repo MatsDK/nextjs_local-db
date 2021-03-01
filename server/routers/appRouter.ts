@@ -5,33 +5,55 @@ import { nanoid } from "nanoid";
 
 const router = express.Router();
 
+interface CollectionBasic {
+  name: string;
+  colId: string;
+}
+
+interface Collection extends CollectionBasic {
+  items?: number;
+  size?: number;
+}
+
+interface LocationBasic {
+  locId: string;
+  name: string;
+  collections: Array<Collection>;
+}
+
+interface Location extends LocationBasic {
+  size?: number;
+}
+
 router.post("/test", function (req: Request, res: Response) {
   console.log("hello");
   res.json({ msg: "hello world" });
 });
 
 router.get("/data", (req: Request, res: Response) => {
-  const data = BSON.deserialize(fs.readFileSync("./data/dbData"));
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
 
-  data.dbs.forEach((element: any) => {
+  items.dbs.forEach((loc: Location) => {
     let thisSize = 0;
-    element.collections.forEach((col: any) => {
+    loc.collections.forEach((col: Collection) => {
       thisSize += fs.statSync(`./data/collection-${col.colId}`).size;
     });
-    element.size = thisSize;
+    loc.size = thisSize;
   });
 
-  res.json(data);
+  res.json(items);
 });
 
 router.get("/data/:id", (req: Request, res: Response) => {
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  const thisLoc = items.dbs.find((x: any) => x.locId === req.params.id);
+  const thisLoc = items.dbs.find(
+    (loc: Location) => loc.locId === req.params.id
+  );
 
-  thisLoc.collections.forEach((element) => {
-    const thisFile = `./data/collection-${element.colId}`;
-    element.items = BSON.deserialize(fs.readFileSync(thisFile)).items.length;
-    element.size = fs.statSync(thisFile).size;
+  thisLoc.collections.forEach((col: Collection) => {
+    const thisFile = `./data/collection-${col.colId}`;
+    col.items = BSON.deserialize(fs.readFileSync(thisFile)).items.length;
+    col.size = fs.statSync(thisFile).size;
   });
 
   res.json({ thisLoc, items });
@@ -39,9 +61,11 @@ router.get("/data/:id", (req: Request, res: Response) => {
 
 router.get("/data/:id/col/:colId", (req: Request, res: Response) => {
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  const thisLoc = items.dbs.find((x: any) => x.locId === req.params.id);
+  const thisLoc = items.dbs.find(
+    (loc: Location) => loc.locId === req.params.id
+  );
   const thisCol = thisLoc.collections.find(
-    (x: any) => x.colId === req.params.colId
+    (col: Collection) => col.colId === req.params.colId
   );
 
   const data = BSON.deserialize(
@@ -52,12 +76,12 @@ router.get("/data/:id/col/:colId", (req: Request, res: Response) => {
 });
 
 router.post("/createloc", (req: Request, res: Response) => {
-  const { name } = req.body;
+  const { name }: { name: string } = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  if (items.dbs.find((x: any) => x.name === name))
+  if (items.dbs.find((loc: Location) => loc.name === name))
     return res.json({ err: true, data: "already exists" });
 
-  const thisItem: any = {
+  const thisItem: Location = {
     locId: nanoid(),
     name,
     collections: [],
@@ -67,20 +91,19 @@ router.post("/createloc", (req: Request, res: Response) => {
   fs.writeFileSync("./data/dbData", BSON.serialize(items));
 
   thisItem.size = 0;
-
   res.json({ err: false, data: thisItem });
 });
 
 router.post("/createcol", (req: Request, res: Response) => {
-  const { name, loc } = req.body;
+  const { name, locId } = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  const thisLoc = items.dbs.find((x: any) => x.locId === loc);
+  const thisLoc = items.dbs.find((loc: Location) => loc.locId === locId);
 
   if (!thisLoc) return res.json({ err: true, data: "unidentified error" });
-  if (thisLoc.collections.find((x: any) => x.name === name))
+  if (thisLoc.collections.find((col: Collection) => col.name === name))
     return res.json({ err: true, data: "already exists" });
 
-  const newCol: any = {
+  const newCol: Collection = {
     name,
     colId: nanoid(),
   };
@@ -101,43 +124,46 @@ router.post("/deleteLoc", (req: Request, res: Response) => {
   const { name } = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
 
-  const idx = items.dbs.findIndex((x: any) => x.locId === name);
+  const idx = items.dbs.findIndex((loc: Location) => loc.locId === name);
   if (!idx && idx !== 0)
     return res.json({ err: true, data: "unidentified error" });
 
-  items.dbs[idx].collections.forEach((col: any) => {
+  items.dbs[idx].collections.forEach((col: Collection) => {
     fs.unlinkSync(`./data/collection-${col.colId}`);
   });
   items.dbs.splice(idx, 1);
 
-  items.dbs.forEach((element: any) => {
+  fs.writeFileSync("./data/dbData", BSON.serialize(items));
+
+  items.dbs.forEach((loc: Location) => {
     let thisSize = 0;
-    element.collections.forEach((col: any) => {
+    loc.collections.forEach((col: Collection) => {
       thisSize += fs.statSync(`./data/collection-${col.colId}`).size;
     });
-    element.size = thisSize;
+    loc.size = thisSize;
   });
 
-  fs.writeFileSync("./data/dbData", BSON.serialize(items));
   res.json({ err: false, data: items.dbs });
 });
 
 router.post("/deleteCol", (req: Request, res: Response) => {
-  const { loc, name } = req.body;
+  const { locId, name } = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  const thisLoc = items.dbs.find((x: any) => x.locId === loc);
+  const thisLoc = items.dbs.find((loc: Location) => loc.locId === locId);
   if (!thisLoc) return res.json({ err: true, data: "location not found" });
 
-  const idx = thisLoc.collections.findIndex((x: any) => x.colId === name);
+  const idx = thisLoc.collections.findIndex(
+    (col: Collection) => col.colId === name
+  );
   fs.unlinkSync(`./data/collection-${thisLoc.collections[idx].colId}`);
 
   thisLoc.collections.splice(idx, 1);
   fs.writeFileSync("./data/dbData", BSON.serialize(items));
 
-  thisLoc.collections.forEach((element: any) => {
-    const thisFile = `./data/collection-${element.colId}`;
-    element.items = BSON.deserialize(fs.readFileSync(thisFile)).items.length;
-    element.size = fs.statSync(thisFile).size;
+  thisLoc.collections.forEach((col: Collection) => {
+    const thisFile = `./data/collection-${col.colId}`;
+    col.items = BSON.deserialize(fs.readFileSync(thisFile)).items.length;
+    col.size = fs.statSync(thisFile).size;
   });
 
   res.json({ err: false, data: thisLoc });
@@ -146,10 +172,10 @@ router.post("/deleteCol", (req: Request, res: Response) => {
 router.post("/renameLoc", (req: Request, res: Response) => {
   const { locId, name } = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  if (items.dbs.filter((x: any) => x.name === name).length)
+  if (items.dbs.filter((loc: Location) => loc.name === name).length)
     return res.json({ err: true, data: "already exists" });
 
-  const thisLoc = items.dbs.find((x: any) => x.locId === locId);
+  const thisLoc = items.dbs.find((loc: Location) => loc.locId === locId);
   if (!thisLoc) return res.json({ err: true, data: "location not found" });
 
   thisLoc.name = name;
@@ -161,16 +187,53 @@ router.post("/renameLoc", (req: Request, res: Response) => {
 router.post("/renameCol", (req: Request, res: Response) => {
   const { locId, colId, name } = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
-  const thisLoc = items.dbs.find((x: any) => x.locId === locId);
+  const thisLoc = items.dbs.find((loc: Location) => loc.locId === locId);
   if (!thisLoc) return res.json({ err: true, data: "location not found" });
 
-  const thisCol = thisLoc.collections.find((x: any) => x.colId === colId);
+  if (thisLoc.collections.find((col: Collection) => col.name === name))
+    return res.json({ err: true, data: "already exists" });
+  const thisCol = thisLoc.collections.find(
+    (col: Collection) => col.colId === colId
+  );
   if (!thisCol) return res.json({ err: true, data: "collection not found" });
 
   thisCol.name = name;
   fs.writeFileSync("./data/dbData", BSON.serialize(items));
 
   res.json({ err: false });
+});
+
+interface InsertProps {
+  JSON: object;
+  locId: string;
+  colId: string;
+}
+
+router.put("/insertDoc", (req, res) => {
+  const { JSON, locId, colId }: InsertProps = req.body;
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
+  const thisLoc = items.dbs.find((loc: Location) => loc.locId === locId);
+  if (!thisLoc) return res.json({ err: true, data: "location not found" });
+
+  const thisCol: Collection = thisLoc.collections.find(
+    (col: Collection) => col.colId === colId
+  );
+  if (!thisCol) return res.json({ err: true, data: "collection not found" });
+  const data = BSON.deserialize(
+    fs.readFileSync(`./data/collection-${thisCol.colId}`)
+  );
+
+  data.items = [
+    {
+      _id: nanoid(),
+      ...JSON,
+    },
+    ...data.items,
+  ];
+
+  fs.writeFileSync(`./data/collection-${thisCol.colId}`, BSON.serialize(data));
+
+  res.json({ err: false, data: data.items });
 });
 
 export default router;

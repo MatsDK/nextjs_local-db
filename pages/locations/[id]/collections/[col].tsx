@@ -6,6 +6,7 @@ import Link from "next/link";
 import React, { useCallback, useEffect, useState, useRef } from "react";
 import styles from "../../../../css/col.module.css";
 import { ArrowForwardIos, Create } from "@material-ui/icons";
+import InsertEditor from "../../../../components/insertEditor";
 
 const Col = (props: any): JSX.Element => {
   const [items, setItems] = useState(props.items);
@@ -14,6 +15,7 @@ const Col = (props: any): JSX.Element => {
   const [showRenameForm, setShowRenameForm] = useState<boolean>(false);
   const [colName, setColName] = useState<string>(props.col.name);
   const [renameInpValue, setRenameInpValue] = useState<string>("");
+  const [showInsertEditor, setShowInsertEditor] = useState<boolean>(false);
   const renameInpRef = useRef<HTMLInputElement>(null);
 
   const observer: any = useRef();
@@ -64,51 +66,66 @@ const Col = (props: any): JSX.Element => {
       renameInpRef.current.focus();
   }, [showRenameForm]);
 
+  const updateItems = (newData: Array<any>) => {
+    setPageNumber(1);
+    setShowInsertEditor(false);
+    setItems(newData.slice(0, 10));
+  };
+
   return (
     <Layout title={props.col.name} data={props}>
       <div className={styles.colPage}>
-        <div className={styles.pathWrapper}>
-          <Link href={`/locations`}>
-            <p className={styles.pathLink}>Locations</p>
-          </Link>
-          <ArrowForwardIos className={styles.arrow} />
-          <Link href={`/locations/${props.loc.locId}`}>
-            <p className={styles.pathLink}>{props.loc.name}</p>
-          </Link>
-          <ArrowForwardIos className={styles.arrow} />
-          <div className={styles.rightPath}>
-            {!showRenameForm && (
-              <p className={styles.currentPathLink}>{colName}</p>
-            )}
-            {showRenameForm && (
-              <form className={styles.renameForm} onSubmit={renameLoc}>
-                <input
-                  ref={renameInpRef}
-                  defaultValue={colName}
-                  type="text"
-                  placeholder="Enter a name"
-                  onChange={(e) => setRenameInpValue(e.target.value)}
-                />
-              </form>
-            )}
-            <Create
-              className={styles.renameIcon}
-              style={{
-                color: showRenameForm ? "#0066af" : "rgb(212, 212, 212)",
-              }}
-              onClick={() =>
-                setShowRenameForm((showRenameForm) => !showRenameForm)
-              }
-            />
+        <div className={styles.pageHeader}>
+          <div className={styles.pathWrapper}>
+            <Link href={`/locations`}>
+              <p className={styles.pathLink}>Locations</p>
+            </Link>
+            <ArrowForwardIos className={styles.arrow} />
+            <Link href={`/locations/${props.loc.locId}`}>
+              <p className={styles.pathLink}>{props.loc.name}</p>
+            </Link>
+            <ArrowForwardIos className={styles.arrow} />
+            <div className={styles.rightPath}>
+              {!showRenameForm && (
+                <p className={styles.currentPathLink}>{colName}</p>
+              )}
+              {showRenameForm && (
+                <form className={styles.renameForm} onSubmit={renameLoc}>
+                  <input
+                    ref={renameInpRef}
+                    defaultValue={colName}
+                    type="text"
+                    placeholder="Enter a name"
+                    onChange={(e) => setRenameInpValue(e.target.value)}
+                  />
+                </form>
+              )}
+              <Create
+                className={styles.renameIcon}
+                style={{
+                  color: showRenameForm ? "#0066af" : "rgb(212, 212, 212)",
+                }}
+                onClick={() =>
+                  setShowRenameForm((showRenameForm) => !showRenameForm)
+                }
+              />
+            </div>
           </div>
-          {/* <Create
-            style={{ color: showRenameForm ? "#0066af" : "rgb(212, 212, 212)" }}
-            className={styles.renameIcon}
+          <button
+            className={showInsertEditor ? styles.activeBtn : ""}
             onClick={() =>
-              setShowRenameForm((showRenameForm) => !showRenameForm)
+              setShowInsertEditor((showInsertEditor) => !showInsertEditor)
             }
-          /> */}
+          >
+            Insert Doc
+          </button>
         </div>
+        {showInsertEditor && (
+          <InsertEditor
+            updateFunc={updateItems}
+            loc={{ locId: props.loc.locId, colId: props.col.colId }}
+          />
+        )}
         <div className="jsonObjectsWrapper">
           {items.map((x: any, i: number) => (
             <div

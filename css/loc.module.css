@@ -54,7 +54,7 @@
 
 .pageHeader button:hover {
   background-color: #171b20;
-  color: #0066af;
+  color: #fff;
 }
 
 .pageHeader p {
@@ -96,7 +96,6 @@
 
 .renameForm input {
   height: 27px;
-  /* box-shadow: 0 0 4px rgba(0, 0, 0, 0.534); */
   margin: 0px 7px;
   padding: 2px 5px;
   font-size: 20px;
@@ -110,4 +109,8 @@
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.activeBtn {
+  background-color: #171b20 !important;
 }

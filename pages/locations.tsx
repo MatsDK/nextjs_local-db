@@ -9,7 +9,7 @@ import "react-confirm-alert/src/react-confirm-alert.css";
 const locations = (props: any): JSX.Element => {
   const [items, setItems] = useState([]);
   const [data, setData] = useState(props);
-  const [newLocationFrom, setNewLocationForm] = useState<Boolean>(false);
+  const [newLocationFrom, setNewLocationForm] = useState<boolean>(false);
 
   useEffect(() => {
     setData(props);
@@ -78,6 +78,7 @@ const locations = (props: any): JSX.Element => {
         <div className={styles.pageHeader}>
           <p>Locations</p>
           <button
+            className={newLocationFrom ? styles.activeBtn : ""}
             onClick={() =>
               setNewLocationForm((newLocationFrom) => !newLocationFrom)
             }

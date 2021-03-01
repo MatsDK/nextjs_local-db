@@ -13,3 +13,31 @@ body,
 .confirmOverlay {
   background: #171b209d !important;
 }
+
+.CodeMirror {
+  height: auto !important;
+  max-height: 500px;
+  font-family: Arial, monospace;
+  font-size: 16px;
+}
+.CodeMirror-scroll {
+  height: auto !important;
+  max-height: 500px;
+}
+
+.react-codemirror2 {
+  height: fit-content !;
+}
+
+.CodeMirror-vscrollbar {
+  margin-right: 7px;
+}
+
+.CodeMirror-vscrollbar::-webkit-scrollbar {
+  background-color: #1f242b;
+  width: 5px;
+}
+.CodeMirror-vscrollbar::-webkit-scrollbar-thumb {
+  background-color: #0066af71;
+  border-radius: 3px;
+}

@@ -4,15 +4,31 @@ import styles from "../css/sidebar.module.css";
 import { Storage, ArrowDropDown } from "@material-ui/icons";
 import { useRouter } from "next/router";
 
-const SidebarLocations = ({ data, activeIndex }): JSX.Element => {
+interface SidebarLoc {
+  locId: string;
+  name: string;
+  collections: Array<any>;
+  size: number;
+  items: number;
+  link: string;
+}
+
+interface SidebarData {
+  data: Array<SidebarLoc>;
+  activeIndex: number;
+}
+
+const SidebarLocations = ({ data, activeIndex }: SidebarData): JSX.Element => {
   const [showLocations, setShowLocations] = useState<Boolean>(false);
-  const [activeLoc, setActiveLoc] = useState(null);
+  const [activeLoc, setActiveLoc] = useState<number>(0);
   const router = useRouter();
 
   useEffect(() => {
     setShowLocations(activeIndex === 4);
     if (activeIndex === 4)
-      setActiveLoc(data.findIndex((x: any) => x.locId === router.query.id));
+      setActiveLoc(
+        data.findIndex((x: SidebarLoc) => x.locId === router.query.id)
+      );
   }, [activeIndex, router]);
 
   const handleClick = () => {
@@ -44,11 +60,11 @@ const SidebarLocations = ({ data, activeIndex }): JSX.Element => {
         <div
           className={showLocations ? styles.activeLocations : styles.locations}
         >
-          {data.map((x: any, i: number) => (
+          {data.map((x: SidebarLoc, i: number) => (
             <Link href={`/locations/${x.locId}`} key={i}>
               <p
                 className={
-                  activeLoc === i
+                  activeLoc === i && router.query.id
                     ? styles.activeLocationLink
                     : styles.locationLink
                 }

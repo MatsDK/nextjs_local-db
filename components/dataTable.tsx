@@ -36,7 +36,25 @@ const orderBy = (data: any, value: any, dir: any) => {
   return data;
 };
 
-const DataTable = ({ data, header, functions, showForm }): JSX.Element => {
+interface functionProps {
+  submitFunc: Function;
+  setNewLocationForm: Function;
+  deleteClicked: Function;
+}
+
+interface DataTableProps {
+  data: Array<any>;
+  header: Array<string>;
+  functions: functionProps;
+  showForm: boolean;
+}
+
+const DataTable = ({
+  data,
+  header,
+  functions,
+  showForm,
+}: DataTableProps): JSX.Element => {
   const { submitFunc, setNewLocationForm, deleteClicked } = functions;
 
   const [items, setItems] = useState(data);

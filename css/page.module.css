@@ -43,3 +43,7 @@
   margin: 0;
   width: fit-content;
 }
+
+.activeBtn {
+  background-color: #171b20 !important;
+}

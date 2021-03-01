@@ -9,12 +9,20 @@ import DataTable from "components/dataTable";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
 
+interface Collection {
+  name: string;
+  coldId: string;
+  items: number;
+  size: number;
+  link: string;
+}
+
 const id = (props: any) => {
   const [items, setItems] = useState<Array<any>>([]);
   const [data, setData] = useState(props);
   const [renameInpValue, setRenameInpValue] = useState<string>("");
   const [showRenameForm, setShowRenameForm] = useState<boolean>(false);
-  const [newLocationFrom, setNewLocationForm] = useState<Boolean>(false);
+  const [newLocationFrom, setNewLocationForm] = useState<boolean>(false);
   const [colName, setColName] = useState<string>(props.locData.name);
   const renameInpRef = useRef<HTMLInputElement>(null);
 
@@ -30,14 +38,14 @@ const id = (props: any) => {
     axios({
       method: "POST",
       url: "http://localhost:3001/createcol/",
-      data: { name: data, loc: props.locData.locId },
+      data: { name: data, locId: props.locData.locId },
     }).then((res) => {
       if (res.data.err) return alert(res.data.data);
       parseData([res.data.data, ...items]);
     });
   };
 
-  const parseData = (data: any) => {
+  const parseData = (data: Array<Collection>) => {
     data.forEach((x: any) => {
       x.link = `/locations/${props.locData.locId}/collections/${x.colId}`;
     });
@@ -56,7 +64,7 @@ const id = (props: any) => {
             axios({
               method: "POST",
               url: "http://localhost:3001/deleteCol/",
-              data: { name: col, loc: props.locData.locId },
+              data: { name: col, locId: props.locData.locId },
             }).then((res) => {
               if (res.data.err) return alert(res.data.data);
               parseData(res.data.data.collections);
@@ -104,6 +112,7 @@ const id = (props: any) => {
       <div className={styles.pageHeader}>
         <p>Collections</p>
         <button
+          className={newLocationFrom ? styles.activeBtn : ""}
           onClick={() =>
             setNewLocationForm((newLocationFrom) => !newLocationFrom)
           }

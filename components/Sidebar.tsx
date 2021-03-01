@@ -4,7 +4,6 @@ import styles from "../css/sidebar.module.css";
 import { useRouter } from "next/router";
 import helper from "./helper";
 import SidebarLocations from "./SidebarLocations";
-
 import {
   HomeOutlined,
   GraphicEqOutlined,
@@ -12,7 +11,7 @@ import {
 } from "@material-ui/icons";
 
 const Sidebar = ({ data }): JSX.Element => {
-  const [activeIndex, setActiveIndex] = useState<number>();
+  const [activeIndex, setActiveIndex] = useState<number>(0);
   const router = useRouter();
 
   useEffect(() => {
