@@ -2,6 +2,8 @@ import BSON from "bson";
 import express, { Request, Response } from "express";
 import fs from "fs";
 import { nanoid } from "nanoid";
+import ip from "ip";
+import cors from "cors";
 
 const router = express.Router();
 
@@ -24,11 +26,6 @@ interface LocationBasic {
 interface Location extends LocationBasic {
   size?: number;
 }
-
-router.post("/test", function (req: Request, res: Response) {
-  console.log("hello");
-  res.json({ msg: "hello world" });
-});
 
 router.get("/data", (req: Request, res: Response) => {
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
@@ -209,7 +206,7 @@ interface InsertProps {
   colId: string;
 }
 
-router.put("/insertDoc", (req, res) => {
+router.post("/insertDoc", cors(), (req, res) => {
   const { JSON, locId, colId }: InsertProps = req.body;
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
   const thisLoc = items.dbs.find((loc: Location) => loc.locId === locId);
@@ -234,6 +231,24 @@ router.put("/insertDoc", (req, res) => {
   fs.writeFileSync(`./data/collection-${thisCol.colId}`, BSON.serialize(data));
 
   res.json({ err: false, data: data.items });
+});
+
+router.get("/statusData", async (req: Request, res: Response) => {
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
+
+  let totalSize = 0;
+  items.dbs.forEach((loc: Location) => {
+    let thisSize = 0;
+    loc.collections.forEach((col: Collection) => {
+      thisSize += fs.statSync(`./data/collection-${col.colId}`).size;
+    });
+    loc.size = thisSize;
+    totalSize += thisSize;
+  });
+
+  const status = BSON.deserialize(fs.readFileSync("./data/status"));
+
+  res.json({ items, ip: ip.address(), status, totalSize });
 });
 
 export default router;

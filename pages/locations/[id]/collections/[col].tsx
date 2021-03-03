@@ -47,7 +47,7 @@ const Col = (props: any): JSX.Element => {
 
     axios({
       method: "POST",
-      url: "http://localhost:3001/renameCol/",
+      url: `http://${process.env.host}/renameCol/`,
       data: {
         locId: props.loc.locId,
         colId: props.col.colId,
@@ -70,6 +70,17 @@ const Col = (props: any): JSX.Element => {
     setPageNumber(1);
     setShowInsertEditor(false);
     setItems(newData.slice(0, 10));
+  };
+
+  const insert = (data: object) => {
+    axios({
+      method: "POST",
+      url: `http://${process.env.host}/insertDoc/`,
+      data: data,
+    }).then((res) => {
+      if (res.data.err) return alert(res.data.data);
+      updateItems(res.data.data);
+    });
   };
 
   return (
@@ -122,7 +133,7 @@ const Col = (props: any): JSX.Element => {
         </div>
         {showInsertEditor && (
           <InsertEditor
-            updateFunc={updateItems}
+            insertFunc={insert}
             loc={{ locId: props.loc.locId, colId: props.col.colId }}
           />
         )}
@@ -147,7 +158,7 @@ const Col = (props: any): JSX.Element => {
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const res = await axios.get(
-    `http://localhost:3001/data/${params!.id}/col/${params!.col}`
+    `http://${process.env.host}/data/${params!.id}/col/${params!.col}`
   );
 
   return {

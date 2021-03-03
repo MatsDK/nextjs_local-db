@@ -21,7 +21,7 @@ const locations = (props: any): JSX.Element => {
 
     axios({
       method: "POST",
-      url: "http://localhost:3001/createloc/",
+      url: `http://${process.env.host}/createloc/`,
       data: { name: newName },
     }).then((res) => {
       if (res.data.err) return alert(res.data.data);
@@ -53,7 +53,7 @@ const locations = (props: any): JSX.Element => {
           onClick: () => {
             axios({
               method: "POST",
-              url: "http://localhost:3001/deleteLoc/",
+              url: `http://${process.env.host}/deleteLoc/`,
               data: { name: locId },
             }).then((res) => {
               if (res.data.err) return alert(res.data.data);
@@ -104,7 +104,7 @@ const locations = (props: any): JSX.Element => {
 };
 
 export async function getServerSideProps() {
-  const res = await axios.get("http://localhost:3001/data");
+  const res = await axios.get(`http://${process.env.host}/data`);
 
   return {
     props: { data: res.data.dbs },

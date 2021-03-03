@@ -1,21 +1,12 @@
-import axios from "axios";
-import Layout from "components/Layout";
-// import styles from "../css/index.module.css";
+import React, { useEffect } from "react";
+import Router from "next/router";
 
-const Index = (props): JSX.Element => {
-  return (
-    <Layout data={props} title={"Home"}>
-      <h1>hello</h1>
-    </Layout>
-  );
+const Index = (): JSX.Element => {
+  useEffect(() => {
+    const { pathname } = Router;
+    if (pathname == "/") Router.push("/status");
+  });
+  return <div></div>;
 };
-
-export async function getServerSideProps() {
-  const res = await axios.get("http://localhost:3001/data");
-
-  return {
-    props: { data: res.data.dbs },
-  };
-}
 
 export default Index;

@@ -41,3 +41,87 @@ body,
   background-color: #0066af71;
   border-radius: 3px;
 }
+
+.cm-s-cobalt.CodeMirror {
+  background: #171b20 !important;
+  color: #fff !important;
+}
+.cm-s-cobalt div.CodeMirror-selected {
+  background: #0066af57 !important;
+}
+.cm-s-cobalt .CodeMirror-line::selection,
+.cm-s-cobalt .CodeMirror-line > span::selection,
+.cm-s-cobalt .CodeMirror-line > span > span::selection {
+  background: rgba(179, 101, 57, 0.99) !important;
+}
+.cm-s-cobalt .CodeMirror-line::-moz-selection,
+.cm-s-cobalt .CodeMirror-line > span::-moz-selection,
+.cm-s-cobalt .CodeMirror-line > span > span::-moz-selection {
+  background: rgba(179, 101, 57, 0.99) !important;
+}
+.cm-s-cobalt .CodeMirror-gutters {
+  background: #171b20 !important;
+  border-right: 1px solid #aaa !important;
+}
+.cm-s-cobalt .CodeMirror-guttermarker {
+  color: #171b20 !important;
+}
+.cm-s-cobalt .CodeMirror-guttermarker-subtle {
+  color: #d0d0d0 !important;
+}
+.cm-s-cobalt .CodeMirror-linenumber {
+  color: #d0d0d0 !important;
+}
+.cm-s-cobalt .CodeMirror-cursor {
+  border-left: 1px solid white !important;
+}
+
+.cm-s-cobalt span.cm-comment {
+  color: #0066af !important;
+}
+.cm-s-cobalt span.cm-atom {
+  color: #ff66af !important;
+}
+.cm-s-cobalt span.cm-number,
+.cm-s-cobalt span.cm-attribute {
+  color: #ff66af !important;
+}
+.cm-s-cobalt span.cm-keyword {
+  color: #ff66af !important;
+}
+.cm-s-cobalt span.cm-string {
+  color: #0066af !important;
+}
+.cm-s-cobalt span.cm-meta {
+  color: #ff66af !important;
+}
+.cm-s-cobalt span.cm-variable-2,
+.cm-s-cobalt span.cm-tag {
+  color: #0066af;
+}
+.cm-s-cobalt span.cm-variable-3,
+.cm-s-cobalt span.cm-def,
+.cm-s-cobalt .cm-type {
+  color: white !important;
+}
+.cm-s-cobalt span.cm-bracket {
+  color: #d8d8d8 !important;
+}
+.cm-s-cobalt span.cm-builtin,
+.cm-s-cobalt span.cm-special {
+  color: #d8d8d8 !important;
+}
+.cm-s-cobalt span.cm-link {
+  color: #ff66af !important;
+}
+.cm-s-cobalt span.cm-error {
+  color: #ff66af !important;
+}
+
+.cm-s-cobalt .CodeMirror-activeline-background {
+  background: #0066af !important;
+}
+.cm-s-cobalt .CodeMirror-matchingbracket {
+  outline: 1px solid grey;
+  color: #777 !important;
+}

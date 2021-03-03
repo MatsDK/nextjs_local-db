@@ -47,3 +47,51 @@
 .activeBtn {
   background-color: #171b20 !important;
 }
+
+.statusPage {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.statusContainer {
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.534);
+  margin: 40px 80px;
+  background-color: #171b20;
+  height: 80vh;
+  width: 100%;
+  display: flex;
+  max-width: 1460px;
+}
+
+.statusLeft {
+  width: 30%;
+  height: 100%;
+  border-right: 1px solid #1f242b;
+}
+
+.statusLeft h3 {
+  margin: 10px;
+  margin-left: 20px;
+}
+
+.statusSizeHeader {
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+
+.statusSize {
+  margin: 20px 0 0 0;
+  width: 100px;
+  height: 100px;
+  text-align: center;
+  border-radius: 50%;
+  border: 7px solid #0066af;
+  display: grid;
+  place-items: center;
+  color: rgb(240, 240, 240);
+  font-size: 20px;
+}

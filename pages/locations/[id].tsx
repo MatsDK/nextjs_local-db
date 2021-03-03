@@ -37,7 +37,7 @@ const id = (props: any) => {
 
     axios({
       method: "POST",
-      url: "http://localhost:3001/createcol/",
+      url: `http://${process.env.host}/createcol/`,
       data: { name: data, locId: props.locData.locId },
     }).then((res) => {
       if (res.data.err) return alert(res.data.data);
@@ -63,7 +63,7 @@ const id = (props: any) => {
           onClick: () => {
             axios({
               method: "POST",
-              url: "http://localhost:3001/deleteCol/",
+              url: `http://${process.env.host}/deleteCol/`,
               data: { name: col, locId: props.locData.locId },
             }).then((res) => {
               if (res.data.err) return alert(res.data.data);
@@ -96,7 +96,7 @@ const id = (props: any) => {
 
     axios({
       method: "POST",
-      url: "http://localhost:3001/renameLoc/",
+      url: `http://${process.env.host}/renameLoc/`,
       data: { locId: props.locData.locId, name: renameInpValue },
     }).then((res) => {
       if (res.data.err) return alert(res.data.data);
@@ -168,7 +168,7 @@ const id = (props: any) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const res = await axios.get(`http://localhost:3001/data/${params!.id}`);
+  const res = await axios.get(`http://${process.env.host}/data/${params!.id}`);
 
   return {
     props: { data: res.data.items.dbs, locData: res.data.thisLoc },

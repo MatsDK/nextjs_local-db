@@ -10,7 +10,7 @@ const Requests = (props) => {
 };
 
 export async function getServerSideProps() {
-  const res = await axios.get("http://localhost:3001/data");
+  const res = await axios.get(`http://${process.env.host}/data`);
 
   return {
     props: { data: res.data.dbs },

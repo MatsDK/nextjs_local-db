@@ -14,7 +14,7 @@ const options = {
   lineNumbers: true,
 };
 
-const InsertEditor = ({ loc, updateFunc }) => {
+const InsertEditor = ({ loc, insertFunc }) => {
   const { locId, colId }: { locId: string; colId: string } = loc;
   const [JSONInput, setJSONInput] = useState<string>("");
 
@@ -35,14 +35,15 @@ const InsertEditor = ({ loc, updateFunc }) => {
     if (isValidJSON.hasOwnProperty("_id"))
       return alert("JSON object can't contain '_id' property");
 
-    axios({
-      method: "PUT",
-      url: "http://localhost:3001/insertDoc/",
-      data: { JSON: isValidJSON, locId, colId },
-    }).then((res) => {
-      if (res.data.err) return alert(res.data.data);
-      updateFunc(res.data.data);
-    });
+    insertFunc({ JSON: isValidJSON, locId, colId });
+    // axios({
+    //   method: "POST",
+    //   url: "http://192.168.0.210:2504/insertDoc/",
+    //   data: { JSON: isValidJSON, locId, colId },
+    // }).then((res) => {
+    //   if (res.data.err) return alert(res.data.data);
+    //   updateFunc(res.data.data);
+    // });
   };
 
   return (
