@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 import { UnControlled as CodeMirror } from "react-codemirror2";
 import styles from "../css/col.module.css";
@@ -36,14 +35,6 @@ const InsertEditor = ({ loc, insertFunc }) => {
       return alert("JSON object can't contain '_id' property");
 
     insertFunc({ JSON: isValidJSON, locId, colId });
-    // axios({
-    //   method: "POST",
-    //   url: "http://192.168.0.210:2504/insertDoc/",
-    //   data: { JSON: isValidJSON, locId, colId },
-    // }).then((res) => {
-    //   if (res.data.err) return alert(res.data.data);
-    //   updateFunc(res.data.data);
-    // });
   };
 
   return (

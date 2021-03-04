@@ -4,6 +4,8 @@ import fs from "fs";
 import { nanoid } from "nanoid";
 import ip from "ip";
 import cors from "cors";
+import { exec } from "child_process";
+import { tcpServerStatus } from "../tcpServerStatus";
 
 const router = express.Router();
 
@@ -236,19 +238,74 @@ router.post("/insertDoc", cors(), (req, res) => {
 router.get("/statusData", async (req: Request, res: Response) => {
   const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
 
-  let totalSize = 0;
+  let totalSize: number = 0,
+    totalCollections: number = 0,
+    totalDocs: number = 0;
+
   items.dbs.forEach((loc: Location) => {
     let thisSize = 0;
     loc.collections.forEach((col: Collection) => {
-      thisSize += fs.statSync(`./data/collection-${col.colId}`).size;
+      const thisPath = `./data/collection-${col.colId}`;
+      totalDocs += BSON.deserialize(fs.readFileSync(thisPath)).items.length;
+      thisSize += fs.statSync(thisPath).size;
     });
     loc.size = thisSize;
     totalSize += thisSize;
+    totalCollections += loc.collections.length;
   });
 
   const status = BSON.deserialize(fs.readFileSync("./data/status"));
 
-  res.json({ items, ip: ip.address(), status, totalSize });
+  const loc = req.get("host")?.split(":");
+  const connection: string = await tcpServerStatus({
+    port: 2505,
+    host: loc![0],
+  });
+
+  if (JSON.parse(connection).isConnected) status.serverStatus = true;
+  else status.serverStatus = false;
+
+  fs.writeFileSync("./data/status", BSON.serialize(status));
+
+  const totalRequests =
+    status.apiRequest.length +
+    status.serverRequests.length +
+    status.serverConnections.length;
+
+  res.json({
+    totalRequests,
+    items,
+    totalCollections,
+    totalDocs,
+    ip: ip.address(),
+    status,
+    totalSize,
+  });
+});
+
+router.post("/toggleTCPSserver", async (req: Request, res: Response) => {
+  const loc = req.get("host")?.split(":");
+  const currentStatus: string = await tcpServerStatus({
+    port: 2505,
+    host: loc![0],
+  });
+
+  if (JSON.parse(currentStatus).isConnected === req.body.newStatus)
+    return res.json({ err: false, data: req.body.newStatus });
+
+  if (req.body.newStatus)
+    exec("pm2 start TCPServer", (error, stdout, stderr) => {
+      if (error) return res.json({ err: true, data: error });
+      if (stderr) return res.json({ err: true, data: stderr });
+    });
+  else if (!req.body.newStatus)
+    exec("pm2 stop TCPServer", (error, stdout, stderr) => {
+      if (error) return res.json({ err: true, data: error });
+      if (stderr) return res.json({ err: true, data: stderr });
+    });
+  else return;
+
+  res.json({ err: false, data: req.body.newStatus });
 });
 
 export default router;
