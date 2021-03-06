@@ -16,16 +16,6 @@ const Sidebar = ({ data }): JSX.Element => {
 
   return (
     <div className={styles.sideBar}>
-      {/* <Link href="/">
-        <div
-          className={
-            activeIndex === 0 ? styles.activeSidebarLink : styles.sidebarLink
-          }
-        >
-          <HomeOutlined />
-          <p>Home</p>
-        </div>
-      </Link> */}
       <Link href="/status">
         <div
           className={

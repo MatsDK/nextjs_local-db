@@ -10,6 +10,7 @@ const status = (props: any): JSX.Element => {
   const [serverStatus, setServerStatus] = useState<boolean>(
     props.status.serverStatus
   );
+  const [apiRequests24Hour, setApiRequests24Hour] = useState<number>(0);
   const [serverRequests24Hour, setServerRequests24Hour] = useState<number>(0);
   const [
     serverConnections24Hour,
@@ -19,7 +20,8 @@ const status = (props: any): JSX.Element => {
   useEffect(() => {
     const tsYesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     let last24HoursReqs: number = 0,
-      last24HoursConnections: number = 0;
+      last24HoursConnections: number = 0,
+      last24HoursApiReqs: number = 0;
 
     props.status.serverRequests.forEach((time: any) => {
       const thisDate = Math.round(new Date(time.timeStamp).getTime() / 1000);
@@ -33,6 +35,13 @@ const status = (props: any): JSX.Element => {
       if (tsYesterday < thisDate) last24HoursConnections++;
     });
 
+    props.status.apiRequest.forEach((time: any) => {
+      const thisDate = Math.round(new Date(time.timeStamp).getTime() / 1000);
+
+      if (tsYesterday < thisDate) last24HoursApiReqs++;
+    });
+
+    setApiRequests24Hour(last24HoursApiReqs);
     setServerConnections24Hour(last24HoursConnections);
     setServerRequests24Hour(last24HoursReqs);
   }, []);
@@ -131,16 +140,15 @@ const status = (props: any): JSX.Element => {
               </div>
               <div className={styles.statusServerRight}>
                 <div className={styles.statusServerRightItem}>
-                  {props.status.serverConnections.length}{" "}
+                  {props.status.apiRequest.length}{" "}
                   <p>
-                    Connection{props.status.serverConnections.length > 1 && "s"}{" "}
-                    to server{" "}
-                    <span> {serverConnections24Hour} last 24 hours</span>
+                    Request{props.status.apiRequest.length > 1 && "s"} to api{" "}
+                    <span> {apiRequests24Hour} last 24 hours</span>
                   </p>
                 </div>
 
                 <div className={styles.statusRightUrl}>
-                  Url: {props.ip}:<p>2504</p>
+                  Url: {props.ip}:<p>2504</p>/api
                 </div>
               </div>
             </div>

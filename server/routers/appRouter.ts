@@ -308,4 +308,32 @@ router.post("/toggleTCPSserver", async (req: Request, res: Response) => {
   res.json({ err: false, data: req.body.newStatus });
 });
 
+router.get("/requestsData", (req: Request, res: Response) => {
+  const items = BSON.deserialize(fs.readFileSync("./data/dbData"));
+  const status = BSON.deserialize(fs.readFileSync("./data/status"));
+
+  items.dbs.forEach((loc: Location) => {
+    let thisSize = 0;
+    loc.collections.forEach((col: Collection) => {
+      thisSize += fs.statSync(`./data/collection-${col.colId}`).size;
+    });
+    loc.size = thisSize;
+  });
+
+  res.json({ status, items });
+});
+
+router.delete("/deleteReqs", (req: Request, res: Response) => {
+  const status = BSON.deserialize(fs.readFileSync("./data/status"));
+  const newStatus = {
+    serverStatus: status.serverStatus,
+    apiRequest: [],
+    serverRequests: [],
+    serverConnections: [],
+  };
+
+  fs.writeFileSync("./data/status", BSON.serialize(newStatus));
+  res.json({ err: false, data: newStatus });
+});
+
 export default router;
