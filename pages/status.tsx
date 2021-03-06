@@ -7,9 +7,7 @@ import styles from "../css/page.module.css";
 
 const status = (props: any): JSX.Element => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [serverStatus, setServerStatus] = useState<boolean>(
-    props.status.serverStatus
-  );
+  const [serverStatus, setServerStatus] = useState<boolean | null>(null);
   const [apiRequests24Hour, setApiRequests24Hour] = useState<number>(0);
   const [serverRequests24Hour, setServerRequests24Hour] = useState<number>(0);
   const [
@@ -18,6 +16,14 @@ const status = (props: any): JSX.Element => {
   ] = useState<number>(0);
 
   useEffect(() => {
+    axios({
+      url: `http://${process.env.host}/getServerStatus/`,
+      method: "GET",
+    }).then((res) => {
+      if (res.data.err) return alert(res.data.data);
+      setServerStatus(res.data.data);
+    });
+
     const tsYesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
     let last24HoursReqs: number = 0,
       last24HoursConnections: number = 0,
@@ -99,16 +105,22 @@ const status = (props: any): JSX.Element => {
             <p className={styles.statusServerHeader}>TCP Server Status</p>
             <div className={styles.statusServer}>
               <div className={styles.statusServerLeft}>
-                <div
-                  onClick={toggleServerStatus}
-                  className={
-                    serverStatus
-                      ? styles.statusServerLeftWrapperActive
-                      : styles.statusServerLeftWrapperInActive
-                  }
-                >
-                  <p>{serverStatus ? "Online" : "Offline"}</p>
-                </div>
+                {serverStatus === null ? (
+                  <div className={styles.statusServerLeftWrapperLoading}>
+                    <p>Loading</p>
+                  </div>
+                ) : (
+                  <div
+                    onClick={toggleServerStatus}
+                    className={
+                      serverStatus
+                        ? styles.statusServerLeftWrapperActive
+                        : styles.statusServerLeftWrapperInActive
+                    }
+                  >
+                    <p>{serverStatus ? "Online" : "Offline"}</p>
+                  </div>
+                )}
               </div>
               <div className={styles.statusServerRight}>
                 <div className={styles.statusServerRightItem}>

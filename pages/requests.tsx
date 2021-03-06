@@ -192,7 +192,7 @@ const Requests = (props: RequestsProps): JSX.Element => {
       url: `http://${process.env.host}/deleteReqs/`,
     }).then((res) => {
       console.log(res);
-      if (res.data.err) alert(res.data.data);
+      if (res.data.err) return alert(res.data.data);
       setServerConn(res.data.data.serverConnections);
       setServerReqs(res.data.data.serverRequests);
       setApiReqs(res.data.data.apiRequest);

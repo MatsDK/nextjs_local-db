@@ -256,15 +256,6 @@ router.get("/statusData", async (req: Request, res: Response) => {
 
   const status = BSON.deserialize(fs.readFileSync("./data/status"));
 
-  const loc = req.get("host")?.split(":");
-  const connection: string = await tcpServerStatus({
-    port: 2505,
-    host: loc![0],
-  });
-
-  if (JSON.parse(connection).isConnected) status.serverStatus = true;
-  else status.serverStatus = false;
-
   fs.writeFileSync("./data/status", BSON.serialize(status));
 
   const totalRequests =
@@ -334,6 +325,16 @@ router.delete("/deleteReqs", (req: Request, res: Response) => {
 
   fs.writeFileSync("./data/status", BSON.serialize(newStatus));
   res.json({ err: false, data: newStatus });
+});
+
+router.get("/getServerStatus", async (req: Request, res: Response) => {
+  const loc = req.get("host")?.split(":");
+  const currentStatus: string = await tcpServerStatus({
+    port: 2505,
+    host: loc![0],
+  });
+
+  res.json({ err: false, data: JSON.parse(currentStatus).isConnected });
 });
 
 export default router;

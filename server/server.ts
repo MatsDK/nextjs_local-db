@@ -1,6 +1,7 @@
 import next from "next";
 import express, { Application, Request, Response } from "express";
-import api from "./routers/appRouter";
+import indexRouter from "./routers/appRouter";
+import apiRouter from "./routers/apiRouter";
 import bodyParser from "body-parser";
 import cors from "cors";
 
@@ -15,7 +16,8 @@ app
 
     server.use(bodyParser());
     server.use(cors());
-    server.use("/", api);
+    server.use("/", indexRouter);
+    server.use("/api", apiRouter);
 
     server.get("*", (req: Request, res: Response) => {
       return handle(req, res);
