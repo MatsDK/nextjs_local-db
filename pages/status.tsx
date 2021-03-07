@@ -73,7 +73,7 @@ const status = (props: any): JSX.Element => {
   };
 
   return (
-    <Layout title="status" data={props}>
+    <Layout title="Status" data={props}>
       <div className={styles.statusPage}>
         <div className={styles.statusContainer}>
           {loading && (

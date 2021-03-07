@@ -199,7 +199,7 @@ const Requests = (props: RequestsProps): JSX.Element => {
   };
 
   return (
-    <Layout title="status" data={props}>
+    <Layout title="Requests" data={props}>
       <div className={styles.chartGrid}>
         <div className={styles.header}>
           <p>Requests</p>
