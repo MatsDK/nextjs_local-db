@@ -337,4 +337,65 @@ router.get("/getServerStatus", async (req: Request, res: Response) => {
   res.json({ err: false, data: JSON.parse(currentStatus).isConnected });
 });
 
+router.delete("/deleteDoc", (req: Request, res: Response) => {
+  const {
+    docId,
+    loc: { locId, colId },
+  }: { docId: string; loc: { locId: string; colId: string } } = req.body;
+
+  const locs = BSON.deserialize(fs.readFileSync("./data/dbData")).dbs;
+  const thisLoc = locs.find((loc: Location) => loc.locId === locId);
+  if (!thisLoc) return res.json({ err: true, data: "location not found" });
+
+  const thisCol: Collection = thisLoc.collections.find(
+    (col: Collection) => col.colId === colId
+  );
+  if (!thisCol) return res.json({ err: true, data: "collection not found" });
+
+  const items = BSON.deserialize(
+    fs.readFileSync(`./data/collection-${thisCol.colId}`)
+  ).items;
+
+  const idx = items.findIndex((x: any) => x._id === docId);
+  if (idx < 0) return res.json({ err: true, data: "Doc not found" });
+  items.splice(idx, 1);
+  fs.writeFileSync(
+    `./data/collection-${thisCol.colId}`,
+    BSON.serialize({ items })
+  );
+  res.json({ err: false, data: items });
+});
+
+router.post("/updateDoc", (req: Request, res: Response) => {
+  const {
+    newDoc,
+    docId,
+    loc: { locId, colId },
+  } = req.body;
+  let thisDoc = JSON.parse(newDoc);
+
+  const locs = BSON.deserialize(fs.readFileSync("./data/dbData")).dbs;
+  const thisLoc = locs.find((loc: Location) => loc.locId === locId);
+  if (!thisLoc) return res.json({ err: true, data: "location not found" });
+
+  const thisCol: Collection = thisLoc.collections.find(
+    (col: Collection) => col.colId === colId
+  );
+  if (!thisCol) return res.json({ err: true, data: "collection not found" });
+
+  const items = BSON.deserialize(
+    fs.readFileSync(`./data/collection-${thisCol.colId}`)
+  ).items;
+  const idx = items.findIndex((x: any) => x._id === docId);
+
+  thisDoc._id = docId;
+  items[idx] = thisDoc;
+
+  fs.writeFileSync(
+    `./data/collection-${thisCol.colId}`,
+    BSON.serialize({ items })
+  );
+  res.json({ err: false, data: items });
+});
+
 export default router;

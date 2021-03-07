@@ -147,7 +147,11 @@ const Col = (props: any): JSX.Element => {
               }
               key={i}
             >
-              <JsonTreeObject data={x} />
+              <JsonTreeObject
+                data={x}
+                update={updateItems}
+                loc={{ locId: props.loc.locId, colId: props.col.colId }}
+              />
             </div>
           ))}
         </div>

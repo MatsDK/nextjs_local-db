@@ -73,7 +73,7 @@ router.get("/:loc/:col", (req: Request, res: Response) => {
     fs.readFileSync(`./data/collection-${thisCol.colId}`)
   ).items;
 
-  let skip = 0;
+  let skip: number = 0;
   if (l) skip = Number(l) * (Number(p) - 1 || 0);
   else if (!l && p) skip = 10 * (Number(p) - 1);
   if (skip < 0) skip = 0;

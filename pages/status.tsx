@@ -16,12 +16,15 @@ const status = (props: any): JSX.Element => {
   ] = useState<number>(0);
 
   useEffect(() => {
+    let mounted = true;
     axios({
       url: `http://${process.env.host}/getServerStatus/`,
       method: "GET",
     }).then((res) => {
-      if (res.data.err) return alert(res.data.data);
-      setServerStatus(res.data.data);
+      if (mounted) {
+        if (res.data.err) return alert(res.data.data);
+        setServerStatus(res.data.data);
+      }
     });
 
     const tsYesterday = Math.round(new Date().getTime() / 1000) - 24 * 3600;
@@ -50,6 +53,10 @@ const status = (props: any): JSX.Element => {
     setApiRequests24Hour(last24HoursApiReqs);
     setServerConnections24Hour(last24HoursConnections);
     setServerRequests24Hour(last24HoursReqs);
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const toggleServerStatus = () => {
