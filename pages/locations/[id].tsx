@@ -54,30 +54,54 @@ const id = (props: any) => {
 
   const deleteClicked = (col: string) => {
     confirmAlert({
-      title: "Confirm to Delete",
-      message: "Are you sure you want to delete this collection.",
+      customUI: ({ onClose }) => {
+        return (
+          <div className={styles.customUI}>
+            <h2>Confirm to Delete</h2>
+            <p>Are you sure you want to delete this collection?</p>
+            <div>
+              <button onClick={onClose}>No</button>
+              <button
+                onClick={() => {
+                  axios({
+                    method: "POST",
+                    url: `http://${process.env.host}/deleteCol/`,
+                    data: { name: col, locId: props.locData.locId },
+                  }).then((res) => {
+                    if (res.data.err) return alert(res.data.data);
+                    parseData(res.data.data.collections);
+                    onClose();
+                  });
+                }}
+              >
+                Yes, Delete it
+              </button>
+            </div>
+          </div>
+        );
+      },
       overlayClassName: "confirmOverlay",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            axios({
-              method: "POST",
-              url: `http://${process.env.host}/deleteCol/`,
-              data: { name: col, locId: props.locData.locId },
-            }).then((res) => {
-              if (res.data.err) return alert(res.data.data);
-              parseData(res.data.data.collections);
-            });
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {
-            return;
-          },
-        },
-      ],
+      // buttons: [
+      //   {
+      //     label: "Yes",
+      //     onClick: () => {
+      //       axios({
+      //         method: "POST",
+      //         url: `http://${process.env.host}/deleteCol/`,
+      //         data: { name: col, locId: props.locData.locId },
+      //       }).then((res) => {
+      //         if (res.data.err) return alert(res.data.data);
+      //         parseData(res.data.data.collections);
+      //       });
+      //     },
+      //   },
+      //   {
+      //     label: "No",
+      //     onClick: () => {
+      //       return;
+      //     },
+      //   },
+      // ],
     });
   };
 

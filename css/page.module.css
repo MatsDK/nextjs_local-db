@@ -289,3 +289,39 @@
 .header button:hover {
   color: #0066af;
 }
+
+.customUI {
+  background-color: #121416dc;
+  padding: 15px 25px;
+  color: rgb(255, 255, 255);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+
+.customUI h2 {
+  margin: 10px 0;
+  margin-top: 0;
+  color: rgb(221, 221, 221);
+}
+
+.customUI div {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.customUI div button {
+  padding: 4px 7px;
+  background-color: #fff;
+  font-size: 18px;
+  color: #000;
+  transition: 0.15s ease;
+  border: 0;
+  border-radius: 7px;
+  margin: 5px;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+
+.customUI div button:hover {
+  color: #0066af;
+}

@@ -44,31 +44,56 @@ const locations = (props: any): JSX.Element => {
 
   const deleteClicked = (locId: string) => {
     confirmAlert({
-      title: "Confirm to Delete",
-      message: "Are you sure you want to delete this Location.",
       overlayClassName: "confirmOverlay",
-      buttons: [
-        {
-          label: "Yes",
-          onClick: () => {
-            axios({
-              method: "POST",
-              url: `http://${process.env.host}/deleteLoc/`,
-              data: { name: locId },
-            }).then((res) => {
-              if (res.data.err) return alert(res.data.data);
-              setData(res.data);
-              parseData(res.data.data);
-            });
-          },
-        },
-        {
-          label: "No",
-          onClick: () => {
-            return;
-          },
-        },
-      ],
+      customUI: ({ onClose }) => {
+        return (
+          <div className={styles.customUI}>
+            <h2>Confirm to Delete</h2>
+            <p>Are you sure you want to delete this Location?</p>
+            <div>
+              <button onClick={onClose}>No</button>
+              <button
+                onClick={() => {
+                  axios({
+                    method: "POST",
+                    url: `http://${process.env.host}/deleteLoc/`,
+                    data: { name: locId },
+                  }).then((res) => {
+                    if (res.data.err) return alert(res.data.data);
+                    setData(res.data);
+                    parseData(res.data.data);
+                    onClose();
+                  });
+                }}
+              >
+                Yes, Delete it
+              </button>
+            </div>
+          </div>
+        );
+      },
+      // buttons: [
+      //   {
+      //     label: "Yes",
+      //     onClick: () => {
+      //       axios({
+      //         method: "POST",
+      //         url: `http://${process.env.host}/deleteLoc/`,
+      //         data: { name: locId },
+      //       }).then((res) => {
+      //         if (res.data.err) return alert(res.data.data);
+      //         setData(res.data);
+      //         parseData(res.data.data);
+      //       });
+      //     },
+      //   },
+      //   {
+      //     label: "No",
+      //     onClick: () => {
+      //       return;
+      //     },
+      //   },
+      // ],
     });
   };
 
