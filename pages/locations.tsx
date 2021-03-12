@@ -72,28 +72,6 @@ const locations = (props: any): JSX.Element => {
           </div>
         );
       },
-      // buttons: [
-      //   {
-      //     label: "Yes",
-      //     onClick: () => {
-      //       axios({
-      //         method: "POST",
-      //         url: `http://${process.env.host}/deleteLoc/`,
-      //         data: { name: locId },
-      //       }).then((res) => {
-      //         if (res.data.err) return alert(res.data.data);
-      //         setData(res.data);
-      //         parseData(res.data.data);
-      //       });
-      //     },
-      //   },
-      //   {
-      //     label: "No",
-      //     onClick: () => {
-      //       return;
-      //     },
-      //   },
-      // ],
     });
   };
 

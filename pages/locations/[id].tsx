@@ -81,27 +81,6 @@ const id = (props: any) => {
         );
       },
       overlayClassName: "confirmOverlay",
-      // buttons: [
-      //   {
-      //     label: "Yes",
-      //     onClick: () => {
-      //       axios({
-      //         method: "POST",
-      //         url: `http://${process.env.host}/deleteCol/`,
-      //         data: { name: col, locId: props.locData.locId },
-      //       }).then((res) => {
-      //         if (res.data.err) return alert(res.data.data);
-      //         parseData(res.data.data.collections);
-      //       });
-      //     },
-      //   },
-      //   {
-      //     label: "No",
-      //     onClick: () => {
-      //       return;
-      //     },
-      //   },
-      // ],
     });
   };
 
